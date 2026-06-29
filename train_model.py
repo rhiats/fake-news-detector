@@ -48,7 +48,6 @@ def train_model(train_df):
         Train the model using the training dataset.
 
         @p: train_df (dataframe)
-        @p: test_df (dataframe)
 
         @r: model - trained model
         @r: vectorizer - tfidf vectorizer
@@ -121,10 +120,15 @@ def main():
 
     metrics = evaluate_model(model, vectorizer, test_df)
 
-    model_path, vectorizer_path = save_model(model, vectorizer)
+    save_model(model, vectorizer)
 
     print("Training complete!")
-    print(metrics)
+    print(f"Accuracy : {metrics['accuracy']:.3f}")
+    print(f"Precision: {metrics['precision']:.3f}")
+    print(f"Recall   : {metrics['recall']:.3f}")
+    print(f"F1 Score : {metrics['f1']:.3f}")
+    print(f"Model saved to: {MODEL_PATH}")
+    print(f"Vectorizer saved to: {VECTORIZER_PATH}")
 
 
 if __name__ == "__main__":
