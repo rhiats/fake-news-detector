@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from config import LEAKAGE_TOKENS, MAX_FEATURES, TEST_SIZE, RANDOM_STATE
+from config import LEAKAGE_TOKENS, MAX_FEATURES, TEST_SIZE, RANDOM_STATE, MODEL_PATH, VECTORIZER_PATH  
 import pickle
 import re
 from sklearn.linear_model import LogisticRegression
@@ -98,7 +98,7 @@ def split_data(data_df):
 
 def train_model(train_df):
     """
-        Train the model using the training and test dataset.
+        Train the model using the training dataset.
 
         @p: train_df (dataframe)
         @p: test_df (dataframe)
@@ -144,3 +144,19 @@ def evaluate_model(model, vectorizer, test_df):
 
     return metrics
 
+def save_model(model, vectorizer):
+    """
+        Save model and vectorizer for future use.
+
+        @p: model - trained model
+        @p: vectorizer - trained tfidf vectorizer
+    """
+    with open(MODEL_PATH, 'wb') as file:
+        pickle.dump(model, file)
+
+    with open(VECTORIZER_PATH, 'wb') as file:
+        pickle.dump(vectorizer, file)
+
+    return MODEL_PATH, VECTORIZER_PATH
+
+    
