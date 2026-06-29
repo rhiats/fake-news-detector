@@ -1,8 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from config import LEAKAGE_TOKENS, MAX_FEATURES, TEST_SIZE, RANDOM_STATE, MODEL_PATH, VECTORIZER_PATH, FAKE_DATA_PATH, TRUE_DATA_PATH   
+from config import MAX_FEATURES, TEST_SIZE, RANDOM_STATE, MODEL_PATH, VECTORIZER_PATH, FAKE_DATA_PATH, TRUE_DATA_PATH   
 import pickle
-import re
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import accuracy_score,precision_score, recall_score, f1_score
