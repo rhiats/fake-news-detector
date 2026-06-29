@@ -1,0 +1,16 @@
+LEAKAGE_TOKENS = [
+    "reuters",
+    "washington",
+    "ap",
+    "associatedpress"
+]
+
+MODEL_PATH = "saved_models/model.pkl"
+
+VECTORIZER_PATH = "saved_models/vectorizer.pkl"
+
+TEST_SIZE = 0.2
+
+RANDOM_STATE = 42
+
+MAX_FEATURES = 5000

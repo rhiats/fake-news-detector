@@ -1,5 +1,12 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from config import LEAKAGE_TOKENS, MAX_FEATURES, TEST_SIZE, RANDOM_STATE
+import pickle
+import re
+from sklearn.linear_model import LogisticRegression
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import accuracy_score,precision_score, recall_score, f1_score
+
 
 def load_data(fake_path, true_path):
     """
@@ -44,15 +51,7 @@ def clean_text(text):
     text = re.sub(r"[^a-z\s]", "", text)
 
     # remove known news source artifacts
-    leakage_tokens = [
-        "reuters",
-        "washington",
-        "breakingnews",
-        "ap",
-        "associatedpress",
-    ]
-
-    for token in leakage_tokens:
+    for token in LEAKAGE_TOKENS:
         text = text.replace(token, "")
 
     # collapse extra whitespace
@@ -60,7 +59,7 @@ def clean_text(text):
 
     return text
 
-def pre_process_data(data_df,clean_text):
+def preprocess_data(data_df):
     """
         Pre process the text in the dataset:
             - lowercase
@@ -69,7 +68,6 @@ def pre_process_data(data_df,clean_text):
             - remove newssource artifacts
 
         @p: data_df(dataframe) - full data
-        @p: clean_text - function to clean the text in the dataset
 
         @r: data_df(dataframe) - includes cleaned text
 
@@ -92,9 +90,57 @@ def split_data(data_df):
 
     train_df, test_df = train_test_split(
     data_df, 
-    test_size=0.2, 
+    test_size=TEST_SIZE, 
     stratify=data_df['label'],
-    random_state=42)
+    random_state=RANDOM_STATE)
 
     return train_df,test_df
+
+def train_model(train_df):
+    """
+        Train the model using the training and test dataset.
+
+        @p: train_df (dataframe)
+        @p: test_df (dataframe)
+
+        @r: model - trained model
+        @r: vectorizer - tfidf vectorizer
+    """
+
+    vectorizer = TfidfVectorizer(
+        stop_words="english",
+        max_features=MAX_FEATURES
+    )
+
+    X_train = vectorizer.fit_transform(train_df["clean_text"])
+
+    model = LogisticRegression(max_iter=1000)
+    model.fit(X_train, train_df["label"])
+        
+    return model, vectorizer
+
+def evaluate_model(model, vectorizer, test_df):
+    """
+        Evaluate the model performance.
+
+        @p model: trained model
+        @ vectorizer: trained vectorizer
+        @test_df: dataframe for testing
+
+        @r: dictorionary of training metrics
+    """
+
+    X_test = vectorizer.transform(test_df["clean_text"])
+    y_pred = model.predict(X_test)
+
+    y_true = test_df["label"]
+
+    metrics = {
+        "accuracy": accuracy_score(y_true, y_pred),
+        "precision": precision_score(y_true, y_pred),
+        "recall": recall_score(y_true, y_pred),
+        "f1": f1_score(y_true, y_pred)
+    }
+
+    return metrics
 
