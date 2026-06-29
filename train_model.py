@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from config import LEAKAGE_TOKENS, MAX_FEATURES, TEST_SIZE, RANDOM_STATE, MODEL_PATH, VECTORIZER_PATH  
+from config import LEAKAGE_TOKENS, MAX_FEATURES, TEST_SIZE, RANDOM_STATE, MODEL_PATH, VECTORIZER_PATH, FAKE_DATA_PATH, TRUE_DATA_PATH   
 import pickle
 import re
 from sklearn.linear_model import LogisticRegression
@@ -159,4 +159,37 @@ def save_model(model, vectorizer):
 
     return MODEL_PATH, VECTORIZER_PATH
 
-    
+def main():
+    """
+        Training pipeline
+    """
+
+    df=load_data(FAKE_DATA_PATH, TRUE_DATA_PATH)
+
+    df = preprocess_data(df)
+
+    train_df,test_df = split_data(df)
+
+    model, vectorizer = train_model(train_df)
+
+    metrics = evaluate_model(model, vectorizer, test_df)
+
+    model_path, vectorizer_path = save_model(model, vectorizer)
+
+    print("Training complete!")
+    print(metrics)
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
+
+
+
+
+
