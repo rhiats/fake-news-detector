@@ -35,3 +35,28 @@ def predict_article(text, model, vectorizer):
 
     return pred
 
+def predict_probability(text, model, vectorizer):
+    """
+        Returns the probability of fake and real using predict_proba()
+
+        @p: text (str) - string of text that the user inputs to check veracity.
+        @p: model - trained model
+        @p: vectorizer - trained vectorizer
+
+        @r: prob_dict - dictionary with probability fake/real news
+    """
+        #Clean text
+        text = clean_text(text)
+
+        # transform text
+        X = vectorizer.transform(text)
+        
+        # get probability
+        prob = model.predict_proba(X)[0]
+
+        prob_dict = {"prob_fake": prob[1],
+        "prob_real": prob[0]
+        }
+
+        return prob_dict
+
