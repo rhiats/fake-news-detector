@@ -28,7 +28,7 @@ def predict_article(text, model, vectorizer):
     #Cleans the article.
     text = clean_text(text)
     #Vectorizes it.
-    text_vect = vectorizer.transform(text)
+    text_vect = vectorizer.transform([text])
     #Predicts fake or real.
     pred = model.predict(text_vect)
     #Returns the prediction.
@@ -49,7 +49,7 @@ def predict_probability(text, model, vectorizer):
         text = clean_text(text)
 
         # transform text
-        X = vectorizer.transform(text)
+        X = vectorizer.transform([text])
         
         # get probability
         prob = model.predict_proba(X)[0]
