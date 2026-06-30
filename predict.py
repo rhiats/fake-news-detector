@@ -33,7 +33,10 @@ def predict_article(text, model, vectorizer):
     pred = model.predict(text_vect)
     #Returns the prediction.
 
-    return pred
+    if pred[0] == 1:
+        return "Fake News"
+
+    return "True News"
 
 def predict_probability(text, model, vectorizer):
     """
@@ -84,7 +87,7 @@ def explain_prediction(text, model, vectorizer):
 
     feature_names = vectorizer.get_feature_names_out()
     coeff = model.coef_[0]
-    
+
     for idx in words:
         word = feature_names[idx]
         weight = coeff[idx]
