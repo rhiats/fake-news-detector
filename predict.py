@@ -45,20 +45,20 @@ def predict_probability(text, model, vectorizer):
 
         @r: prob_dict - dictionary with probability fake/real news
     """
-        #Clean text
-        text = clean_text(text)
+    #Clean text
+    text = clean_text(text)
 
-        # transform text
-        X = vectorizer.transform([text])
-        
-        # get probability
-        prob = model.predict_proba(X)[0]
+    # transform text
+    X = vectorizer.transform([text])
+    
+    # get probability
+    prob = model.predict_proba(X)[0]
 
-        prob_dict = {"prob_fake": prob[1],
-        "prob_real": prob[0]
-        }
+    prob_dict = {"prob_fake": prob[1],
+    "prob_real": prob[0]
+    }
 
-        return prob_dict
+    return prob_dict
 
 def explain_prediction(text, model, vectorizer):
     """
@@ -81,6 +81,8 @@ def explain_prediction(text, model, vectorizer):
     words = vectorizer.transform([text]).nonzero()[1]
     
     contributions = []
+
+    feature_names = vectorizer.get_feature_names_out()
     
     for idx in words:
         word = feature_names[idx]
