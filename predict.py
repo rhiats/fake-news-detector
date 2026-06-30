@@ -83,6 +83,7 @@ def explain_prediction(text, model, vectorizer):
     contributions = []
 
     feature_names = vectorizer.get_feature_names_out()
+    coeff = model.coef_[0]
     
     for idx in words:
         word = feature_names[idx]
