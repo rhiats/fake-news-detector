@@ -1,5 +1,5 @@
 import pickle
-from config import MODEL_PATH, VECTORIZER_PATH
+from config import MODEL_PATH, VECTORIZER_PATH, top_k
 from preprocessing import clean_text
 
 def load_model():
@@ -60,3 +60,38 @@ def predict_probability(text, model, vectorizer):
 
         return prob_dict
 
+def explain_prediction(text, model, vectorizer):
+    """
+        Returns the top contributing words (your "Fake News Detective Explanation Layer").
+
+        @p: text (str) - string of text that the user inputs to check veracity.
+        @p: model - trained model
+        @p: vectorizer - trained vectorizer
+
+        @r: top fake and real words
+    """
+
+    #Clean text
+    text = clean_text(text)
+
+    # transform text
+    X = vectorizer.transform([text])
+    
+    # map word → importance
+    words = vectorizer.transform([text]).nonzero()[1]
+    
+    contributions = []
+    
+    for idx in words:
+        word = feature_names[idx]
+        weight = coeff[idx]
+        contributions.append((word, weight))
+    
+    # sort strongest signals
+    top_fake = sorted(contributions, key=lambda x: x[1], reverse=True)[:top_k]
+    top_real = sorted(contributions, key=lambda x: x[1])[:top_k]
+    
+    return {
+        "top_fake_words": top_fake,
+        "top_real_words": top_real
+    }

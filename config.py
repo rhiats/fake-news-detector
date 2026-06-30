@@ -18,3 +18,5 @@ MAX_FEATURES = 5000
 FAKE_DATA_PATH = "data/Fake.csv.zip"
 
 TRUE_DATA_PATH = "data/True.csv.zip"
+
+top_k = 5
