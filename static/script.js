@@ -33,14 +33,29 @@ function displayResult(data) {
     const probs = data.probabilities;
     const explanation = data.explanation;
 
-    resultDiv.innerHTML = `
-        <h2>Prediction: ${prediction}</h2>
+    let color = prediction === "Fake News" ? "#ef4444" : "#22c55e";
 
-        <p><strong>Confidence:</strong></p>
-        <p>Fake: ${(probs.prob_fake * 100).toFixed(2)}%</p>
-        <p>Real: ${(probs.prob_real * 100).toFixed(2)}%</p>
+    resultDiv.innerHTML = `
+        <h2 style="color:${color}">
+            ${prediction === "Fake News" ? "🚨 Fake News" : "✅ Real News"}
+        </h2>
+
+        <p><strong>Confidence Scores</strong></p>
+
+        <div class="bar-container">
+            <div class="bar fake" style="width:${probs.prob_fake * 100}%">
+                Fake ${(probs.prob_fake * 100).toFixed(1)}%
+            </div>
+        </div>
+
+        <div class="bar-container">
+            <div class="bar real" style="width:${probs.prob_real * 100}%">
+                Real ${(probs.prob_real * 100).toFixed(1)}%
+            </div>
+        </div>
 
         <h3>Why this prediction?</h3>
+
         <p><strong>Fake signals:</strong> ${
             explanation.top_fake_words.map(w => w[0]).join(", ")
         }</p>
