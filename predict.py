@@ -34,9 +34,13 @@ def predict_article(text, model, vectorizer):
     #Returns the prediction.
 
     if pred[0] == 1:
-        return "Fake News"
+        return {
+            "prediction": "Fake News"
+        }
 
-    return "True News"
+    return {
+            "prediction": "True News"
+        }
 
 def predict_probability(text, model, vectorizer):
     """
@@ -52,10 +56,10 @@ def predict_probability(text, model, vectorizer):
     text = clean_text(text)
 
     # transform text
-    X = vectorizer.transform([text])
+    article_vector = vectorizer.transform([text])
     
     # get probability
-    prob = model.predict_proba(X)[0]
+    prob = model.predict_proba(article_vector)[0]
 
     prob_dict = {"prob_fake": prob[1],
     "prob_real": prob[0]
@@ -78,10 +82,10 @@ def explain_prediction(text, model, vectorizer):
     text = clean_text(text)
 
     # transform text
-    X = vectorizer.transform([text])
+    article_vector = vectorizer.transform([text])
     
     # map word → importance
-    words = vectorizer.transform([text]).nonzero()[1]
+    words = article_vector.nonzero()[1]
     
     contributions = []
 
@@ -100,4 +104,22 @@ def explain_prediction(text, model, vectorizer):
     return {
         "top_fake_words": top_fake,
         "top_real_words": top_real
+    }
+
+def analyze_article(text, model, vectorizer):
+    """
+        Combine results of helper function
+        @p: text (str) - string of text that the user inputs to check veracity.
+        @p: model - trained model
+        @p: vectorizer - trained vectorizer
+
+        @r: dict - results from the analysis
+        
+    """
+
+    pred_dict = predict_article(text, model, vectorizer)
+    return {
+        "prediction": pred_dict["prediction"],
+        "probabilities": predict_probability(text, model, vectorizer),
+        "explanation": explain_prediction(text, model, vectorizer)
     }
