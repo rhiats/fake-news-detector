@@ -37,7 +37,7 @@ function displayResult(data) {
 
     resultDiv.innerHTML = `
         <h2 style="color:${color}">
-            ${prediction === "Fake News" ? "🚨 Fake News" : "✅ Real News"}
+            ${prediction === "Fake News" ? " Fake News" : " Real News"}
         </h2>
 
         <p><strong>Confidence Scores</strong></p>

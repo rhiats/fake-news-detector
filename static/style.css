@@ -56,3 +56,24 @@ button:hover {
     background: #1e293b;
     text-align: left;
 }
+
+.bar-container {
+    background: #334155;
+    border-radius: 8px;
+    margin: 8px 0;
+    overflow: hidden;
+}
+
+.bar {
+    padding: 6px;
+    font-size: 12px;
+    color: white;
+}
+
+.fake {
+    background: #ef4444;
+}
+
+.real {
+    background: #22c55e;
+}
