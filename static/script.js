@@ -1,9 +1,10 @@
 async function analyzeArticle() {
     const text = document.getElementById("articleText").value;
     const resultDiv = document.getElementById("result");
+    const loadingDiv = document.getElementById("loading");
 
-    // show loading state
-    resultDiv.innerHTML = "Analyzing... 🧠";
+    resultDiv.innerHTML = "";
+    loadingDiv.style.display = "block";
 
     try {
         const response = await fetch("/predict", {
@@ -11,17 +12,18 @@ async function analyzeArticle() {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ text: text })
+            body: JSON.stringify({ text })
         });
 
         const data = await response.json();
 
-        console.log(data); // always inspect first
+        loadingDiv.style.display = "none";
 
         displayResult(data);
 
     } catch (error) {
-        resultDiv.innerHTML = "Error connecting to server ❌";
+        loadingDiv.style.display = "none";
+        resultDiv.innerHTML = "Error";
         console.error(error);
     }
 }
@@ -31,37 +33,33 @@ function displayResult(data) {
 
     const prediction = data.prediction;
     const probs = data.probabilities;
-    const explanation = data.explanation;
 
-    let color = prediction === "Fake News" ? "#ef4444" : "#22c55e";
+    const fakePct = (probs.prob_fake * 100).toFixed(1);
+    const realPct = (probs.prob_real * 100).toFixed(1);
+
+    const color = prediction === "Fake News" ? "#ef4444" : "#22c55e";
 
     resultDiv.innerHTML = `
-        <h2 style="color:${color}">
-            ${prediction === "Fake News" ? " Fake News" : " Real News"}
-        </h2>
+        <div class="fade-in">
 
-        <p><strong>Confidence Scores</strong></p>
+            <h2 style="color:${color}">
+                ${prediction}
+            </h2>
 
-        <div class="bar-container">
-            <div class="bar fake" style="width:${probs.prob_fake * 100}%">
-                Fake ${(probs.prob_fake * 100).toFixed(1)}%
+            <h3>Confidence</h3>
+
+            <div class="bar-container">
+                <div class="bar fake" style="width:${fakePct}%">
+                    Fake ${fakePct}%
+                </div>
             </div>
-        </div>
 
-        <div class="bar-container">
-            <div class="bar real" style="width:${probs.prob_real * 100}%">
-                Real ${(probs.prob_real * 100).toFixed(1)}%
+            <div class="bar-container">
+                <div class="bar real" style="width:${realPct}%">
+                    Real ${realPct}%
+                </div>
             </div>
+
         </div>
-
-        <h3>Why this prediction?</h3>
-
-        <p><strong>Fake signals:</strong> ${
-            explanation.top_fake_words.map(w => w[0]).join(", ")
-        }</p>
-
-        <p><strong>Real signals:</strong> ${
-            explanation.top_real_words.map(w => w[0]).join(", ")
-        }</p>
     `;
 }
