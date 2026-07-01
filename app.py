@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
+import csv
 
 app = FastAPI()
 
@@ -30,4 +31,19 @@ def predict(article: ArticleRequest):
     results_dict = pred.analyze_article(article.text, model, vectorizer)
 
     return results_dict
+
+class FeedbackRequest(BaseModel):
+    text: str
+    true_label: int
+    predicted_label: int
+
+
+@app.post("/feedback")
+def feedback(data: FeedbackRequest):
+
+    with open("feedback_data.csv", "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow([data.text, data.true_label, data.predicted_label])
+
+    return {"status": "saved"}
 

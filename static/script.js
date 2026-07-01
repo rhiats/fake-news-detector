@@ -62,4 +62,29 @@ function displayResult(data) {
 
         </div>
     `;
+
+    document.getElementById("feedback").style.display = "block";
+
+    window.lastPrediction = prediction === "Fake News" ? 1 : 0;
+}
+
+async function sendFeedback(trueLabel) {
+    const text = document.getElementById("articleText").value;
+
+    // you must store last prediction globally
+    const predictedLabel = window.lastPrediction;
+
+    await fetch("/feedback", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            text: text,
+            true_label: trueLabel,
+            predicted_label: predictedLabel
+        })
+    });
+
+    alert("Feedback saved");
 }
