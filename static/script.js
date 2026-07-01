@@ -69,10 +69,11 @@ function displayResult(data) {
 }
 
 async function sendFeedback(trueLabel) {
-    const text = document.getElementById("articleText").value;
 
-    // you must store last prediction globally
+    const text = window.currentArticle;
     const predictedLabel = window.lastPrediction;
+
+    console.log("Sending:", text, trueLabel, predictedLabel);
 
     await fetch("/feedback", {
         method: "POST",
