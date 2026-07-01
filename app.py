@@ -1,9 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 import predict as pred
 from pydantic import BaseModel
 from fastapi.templating import Jinja2Templates
-from fastapi import Request
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 
 app = FastAPI()
 
